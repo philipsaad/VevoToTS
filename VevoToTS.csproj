@@ -45,9 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ArgumentHandler.cs" />
+    <Compile Include="Classes\ExtensionMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Vevo.cs" />
+    <Compile Include="Classes\Vevo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

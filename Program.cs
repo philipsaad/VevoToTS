@@ -12,6 +12,15 @@ namespace VevoToTS
     {
         static void Main(string[] args)
         {
+            VevoRendition vevoRendition = Vevo.GetBestVevoRendition("USUV71501692");
+
+            if (vevoRendition.Url.EndsWith("m3u8"))
+            {
+                VevoHttpStreamingUrl bestVevoHttpStreamingUrl = Vevo.GetBestVevoHttpStreamingUrl(vevoRendition.Url);
+                List<string> transportFileList = Vevo.GetVevoTransportFileList(bestVevoHttpStreamingUrl.Url);
+
+                deleteFiles(concatenateFiles(downloadFiles(transportFileList), "Alright.ts"));
+            }
         }
 
         static List<string> concatenateFiles(List<string> transportStreamFiles, string outputFile)

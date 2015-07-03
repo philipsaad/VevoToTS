@@ -69,7 +69,7 @@ namespace VevoToTS
         {
             List<VevoRendition> vevoRenditions = GetVevoRenditions(videoID).ToList();
 
-            VevoRendition result = vevoRenditions.Where(vr => vr.Name == "HTTP Live Streaming").OrderByDescending(vr => vr.Version).FirstOrDefault();
+            VevoRendition result = vevoRenditions.Where(vr => vr.Name == "HTTP Live Streaming").OrderByDescending(vr => vr.Version).OrderByDescending(vr => vr.SourceType).FirstOrDefault();
 
             return result;
         }

@@ -34,6 +34,9 @@ namespace VevoToTS
                 string id = (string)videoVersion["id"];
                 string name = String.Empty;
                 string url = String.Empty;
+                string extension = String.Empty;
+
+                string fileName = GetFileName(videoInfo);
 
                 string renditionData = (string)videoVersion["data"];
                 if (!String.IsNullOrWhiteSpace(renditionData))
@@ -48,22 +51,67 @@ namespace VevoToTS
                         url = renditionXElement.Attribute("url").Value;
                         //TODO
                         // totalBitrate="56" videoBitrate="56" audioBitrate="128" frameWidth="176" frameheight="144" videoCodec="H264" audioCodec="AAC" audioSampleRate="44100" />
+
+                        if (url.EndsWith(".mp4"))
+                        {
+                            extension = ".mp4";
+                        }
+                        else
+                        {
+                            extension = ".ts";
+                        }
+
+                        VevoRendition vr = new VevoRendition()
+                        {
+                            FileName = fileName + extension,
+                            Version = version,
+                            SourceType = sourceType,
+                            ID = id,
+                            Name = name,
+                            Url = url,
+                        };
+
+                        results.Add(vr);
                     }
                 }
 
-                VevoRendition vr = new VevoRendition()
-                {
-                    Version = version,
-                    SourceType = sourceType,
-                    ID = id,
-                    Name = name,
-                    Url = url,
-                };
-
-                results.Add(vr);
             }
 
             return results;
+        }
+
+        private static string GetFileName(JObject videoInfo)
+        {
+            string fileName = String.Empty;
+
+            string title = videoInfo["video"]["title"].ToString();
+            IEnumerable<string> mainArtists = videoInfo["video"]["mainArtists"].Values<string>("artistName");
+            IEnumerable<string> featuredArtists = videoInfo["video"]["featuredArtists"].Values<string>("artistName");
+
+            int commaIndex = -1;
+
+            fileName = string.Join(", ", mainArtists);
+
+            commaIndex = fileName.LastIndexOf(",");
+            if (commaIndex > -1)
+            {
+                fileName = fileName.Substring(0, commaIndex) + " &" + fileName.Substring(commaIndex + 1);
+            }
+
+            fileName += " - " + title;
+
+            if (featuredArtists.Count() > 0)
+            {
+                fileName += " (feat. " + string.Join(", ", featuredArtists) + ")";
+
+                commaIndex = fileName.LastIndexOf(",");
+                if (commaIndex > -1)
+                {
+                    fileName = fileName.Substring(0, commaIndex) + " &" + fileName.Substring(commaIndex + 1);
+                }
+            }
+
+            return fileName;
         }
 
         public static VevoRendition GetBestVevoRendition(string videoID)
@@ -93,7 +141,7 @@ namespace VevoToTS
                 if (!String.IsNullOrWhiteSpace(m3uLine) && previousM3uLine.StartsWith("#EXT-X-STREAM-INF"))
                 {
                     string programID = string.Empty;
-                    int bandwidth = 0;                    
+                    int bandwidth = 0;
                     string resolution = String.Empty;
                     string videoCodec = String.Empty;
                     string audioCodec = String.Empty;
@@ -172,6 +220,7 @@ namespace VevoToTS
         public string VideoCodec { get; set; }
         public string AudioCodec { get; set; }
         public int? AudioSampleRate { get; set; }
+        public string FileName { get; set; }
     }
 
     public class VevoHttpStreamingUrl

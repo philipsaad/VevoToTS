@@ -8,7 +8,7 @@ namespace VevoToTS
         [Option('v', "videoId", Required = true, HelpText = "VEVO Video Id.")]
         public string VideoId { get; set; }
 
-        [Option('o', "outputFile", Required = true, HelpText = "Output filename.")]
+        [Option('o', "outputFile", HelpText = "Output filename.")]
         public string OutputFile { get; set; }
 
         [ParserState]

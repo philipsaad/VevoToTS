@@ -21,7 +21,7 @@ namespace VevoToTS
                 VevoHttpStreamingUrl bestVevoHttpStreamingUrl = Vevo.GetBestVevoHttpStreamingUrl(vevoRendition.Url);
                 List<string> transportFileList = Vevo.GetVevoTransportFileList(bestVevoHttpStreamingUrl.Url);
 
-                deleteFiles(concatenateFiles(downloadFiles(transportFileList), options.OutputFile));
+                deleteFiles(concatenateFiles(downloadFiles(transportFileList), options.OutputFile ?? vevoRendition.FileName));
             }
         }
 

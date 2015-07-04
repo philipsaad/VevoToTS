@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -20,8 +21,11 @@ namespace VevoToTS
             {
                 VevoHttpStreamingUrl bestVevoHttpStreamingUrl = Vevo.GetBestVevoHttpStreamingUrl(vevoRendition.Url);
                 List<string> transportFileList = Vevo.GetVevoTransportFileList(bestVevoHttpStreamingUrl.Url);
-
+                
                 deleteFiles(concatenateFiles(downloadFiles(transportFileList), options.OutputFile ?? vevoRendition.FileName));
+
+                Console.Write("\r{0}", "".PadRight(60, ' '));
+                Console.WriteLine("\rFile saved as: \"" + (options.OutputFile ?? vevoRendition.FileName) + "\"");
             }
         }
 
@@ -47,11 +51,20 @@ namespace VevoToTS
 
             using (var webClient = new WebClient())
             {
+                int count = 1;
+                decimal total = transportStreamFiles.Count;
+
                 foreach (string transportStreamFile in transportStreamFiles)
                 {
+                    string percent = (count / total).ToString("p");
+                    Console.Write("\r{0}", "".PadRight(60, ' '));
+                    Console.Write("\rDownloading file " + count + " of " + total + ". (" + percent + ")");
+
                     string tempFile = Path.GetTempFileName();
                     webClient.DownloadFile(transportStreamFile, tempFile);
                     downloadedTransportStreamFiles.Add(tempFile);
+
+                    count++;
                 }
             }
 

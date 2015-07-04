@@ -1,34 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VevoToTS
 {
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
-            //Retrieve the arguments being passed into the application
-            List<string> args = Environment.GetCommandLineArgs().Parse();
+            var options = new Options();
+            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                return;
+            }
 
-            //Show usage if the user did not pass any arguments or specifically passed in the usage argument
-            if ((args.Count == 1) || (args.Contains("/?"))) { ArgumentHandler.showUsage(); return; }
-
-            //Show version information if the user passed in the correct argument
-            if (args.Contains("/V")) { ArgumentHandler.showVersion(); return; }
-            
-            VevoRendition vevoRendition = Vevo.GetBestVevoRendition("USUV71501692");
+            VevoRendition vevoRendition = Vevo.GetBestVevoRendition(options.VideoId);
 
             if (vevoRendition.Url.EndsWith("m3u8"))
             {
                 VevoHttpStreamingUrl bestVevoHttpStreamingUrl = Vevo.GetBestVevoHttpStreamingUrl(vevoRendition.Url);
                 List<string> transportFileList = Vevo.GetVevoTransportFileList(bestVevoHttpStreamingUrl.Url);
 
-                deleteFiles(concatenateFiles(downloadFiles(transportFileList), "Alright.ts"));
+                deleteFiles(concatenateFiles(downloadFiles(transportFileList), options.OutputFile));
             }
         }
 

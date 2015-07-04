@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -91,7 +92,8 @@ namespace VevoToTS
             {
                 if (!String.IsNullOrWhiteSpace(m3uLine) && previousM3uLine.StartsWith("#EXT-X-STREAM-INF"))
                 {
-                    int bandwidth = 0;
+                    string programID = string.Empty;
+                    int bandwidth = 0;                    
                     string resolution = String.Empty;
                     string videoCodec = String.Empty;
                     string audioCodec = String.Empty;
@@ -99,8 +101,9 @@ namespace VevoToTS
 
                     string[] urlInfo = previousM3uLine.Split(',');
 
-                    bandwidth = Int32.Parse(urlInfo[0].Substring(urlInfo[0].IndexOf("=") + 1));
-                    resolution = urlInfo[1].Substring(urlInfo[1].IndexOf("=") + 1);
+                    bandwidth = Int32.Parse(new Regex("BANDWIDTH=([\\d]+)").Match(previousM3uLine).Groups[1].Value);
+                    resolution = new Regex("RESOLUTION=([a-z0-9]+)").Match(previousM3uLine).Groups[1].Value;
+                    //TODO seperate resolutions, add ProgramID, fix videoCodec and audioCodec when ProgramID exists.
                     videoCodec = urlInfo[2].Substring(urlInfo[2].IndexOf("=") + 2);
                     audioCodec = urlInfo[3].Substring(0, urlInfo[3].Length - 1);
 
@@ -173,6 +176,7 @@ namespace VevoToTS
 
     public class VevoHttpStreamingUrl
     {
+        public string ProgramID { get; set; }
         public int Bandwidth { get; set; }
         public string Resolution { get; set; }
         public string VideoCodec { get; set; }

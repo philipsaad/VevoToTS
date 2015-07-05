@@ -23,7 +23,9 @@ namespace VevoToTS
             List<VevoRendition> results = new List<VevoRendition>();
 
             var wc = new WebClient();
-            string videoData = wc.DownloadString(videoUrl);
+            wc.Encoding = System.Text.UTF8Encoding.UTF8;
+
+            string videoData = wc.DownloadString(videoUrl);            
 
             JObject videoInfo = JObject.Parse(videoData);
             JToken videoVersions = videoInfo["video"]["videoVersions"];
@@ -134,6 +136,8 @@ namespace VevoToTS
             List<VevoHttpStreamingUrl> result = new List<VevoHttpStreamingUrl>();
 
             var wc = new WebClient();
+            wc.Encoding = System.Text.UTF8Encoding.UTF8;
+
             string m3uData = wc.DownloadString(httpStreamingUrl);
 
             List<string> m3uDataArray = m3uData.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).ToList();
@@ -192,6 +196,8 @@ namespace VevoToTS
             List<string> result = new List<string>();
 
             var wc = new WebClient();
+            wc.Encoding = System.Text.UTF8Encoding.UTF8;
+
             string m3uData = wc.DownloadString(transportFileUrl);
 
             List<string> m3uDataArray = m3uData.Split(new string[] { "\n" }, StringSplitOptions.None).ToList();

@@ -26,26 +26,26 @@ namespace VevoToTS
 
         public static List<string> DownloadFiles(List<string> transportStreamFiles)
         {
-            List<string> downloadedTransportStreamFiles = new List<string>();
+            List<string> downloadedTransportStreamFiles = transportStreamFiles;
 
-            using (var webClient = new WebClient())
-            {
-                int count = 1;
-                decimal total = transportStreamFiles.Count;
-
-                foreach (string transportStreamFile in transportStreamFiles)
+            int count = 1;
+            decimal total = transportStreamFiles.Count;
+            
+            Parallel.ForEach(transportStreamFiles, transportStreamFile =>
                 {
-                    string percent = (count / total).ToString("p");
-                    Console.Write("\r{0}", "".PadRight(60, ' '));
-                    Console.Write("\rDownloading file " + count + " of " + total + ". (" + percent + ")");
+                    using (var webClient = new WebClient())
+                    {
+                        string percent = (count / total).ToString("p");
+                        Console.Write("\r{0}", "".PadRight(60, ' '));
+                        Console.Write("\rDownloading file " + count + " of " + total + ". (" + percent + ")");
 
-                    string tempFile = Path.GetTempFileName();
-                    webClient.DownloadFile(transportStreamFile, tempFile);
-                    downloadedTransportStreamFiles.Add(tempFile);
+                        string tempFile = Path.GetTempFileName();
+                        webClient.DownloadFile(transportStreamFile, tempFile);
+                        downloadedTransportStreamFiles[transportStreamFiles.IndexOf(transportStreamFile)] = tempFile;
 
-                    count++;
-                }
-            }
+                        count++;
+                    }
+                });
 
             return downloadedTransportStreamFiles;
         }

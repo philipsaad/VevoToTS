@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -110,6 +111,8 @@ namespace VevoToTS
                     fileName = fileName.Substring(0, commaIndex) + " &" + fileName.Substring(commaIndex + 1);
                 }
             }
+
+            fileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
 
             return fileName;
         }

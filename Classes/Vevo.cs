@@ -117,6 +117,7 @@ namespace VevoToTS
             fileName = string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
             fileName = fileName.Replace(" (Official Video)", String.Empty);
             fileName = fileName.Replace(" (Official)", String.Empty);
+            fileName = fileName.Replace(" (Explicit Video)", String.Empty);
             fileName = fileName.Replace(" (Explicit)", String.Empty);
 
             return fileName;

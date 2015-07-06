@@ -11,6 +11,9 @@ namespace VevoToTS
         [Option('o', "outputFile", HelpText = "Output filename.")]
         public string OutputFile { get; set; }
 
+        [Option('t', "threads", HelpText = "Download threads. Defaults to 1. 0 = unlimited")]
+        public int? DownloadThreads { get; set; }
+
         [ParserState]
         public IParserState LastParserState { get; set; }
 

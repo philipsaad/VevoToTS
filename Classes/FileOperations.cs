@@ -24,14 +24,16 @@ namespace VevoToTS
             return transportStreamFiles;
         }
 
-        public static List<string> DownloadFiles(List<string> transportStreamFiles)
+        public static List<string> DownloadFiles(List<string> transportStreamFiles, int downloadThreads)
         {
             List<string> downloadedTransportStreamFiles = transportStreamFiles;
 
             int count = 1;
             decimal total = transportStreamFiles.Count;
-            
-            Parallel.ForEach(transportStreamFiles, transportStreamFile =>
+
+            Parallel.ForEach(transportStreamFiles,
+                new ParallelOptions { MaxDegreeOfParallelism = downloadThreads },
+                transportStreamFile =>
                 {
                     using (var webClient = new WebClient())
                     {

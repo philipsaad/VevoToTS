@@ -108,7 +108,7 @@ namespace VevoToTS
                 fileName += " (feat. " + string.Join(", ", featuredArtists) + ")";
 
                 commaIndex = fileName.LastIndexOf(",");
-                if (commaIndex > -1)
+                if (commaIndex > -1 && featuredArtists.Count() > 1)
                 {
                     fileName = fileName.Substring(0, commaIndex) + " &" + fileName.Substring(commaIndex + 1);
                 }
